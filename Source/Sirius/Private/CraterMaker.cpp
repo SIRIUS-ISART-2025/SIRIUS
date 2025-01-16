@@ -106,15 +106,9 @@ void ACraterMaker::AdjustLandscapeAtWorldLocation(const FVector& WorldLocation, 
 
     // Flush any changes to the heightmap
     HeightmapAccessor.Flush();
-landscape->CreateLandscapeInfo();
+// landscape->CreateLandscapeInfo();
 }
 
-/*************  ✨ Codeium Command ⭐  *************/
-/**
- * Called when the 'P' key is pressed. Adjusts the landscape at the current camera position with the
- * specified radius and edge blend factor.
- */
-/******  eb59fcb3-33a0-497b-856b-b31bb6d53851  *******/
 void ACraterMaker::OnPKeyPressed()
 {
 worldLocation = GetWorld()->GetFirstPlayerController()->GetTargetLocation() - FVector(0,0,168);// + GetTransform().GetLocation();

@@ -1,19 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Spells/Craft.h"
+#include "Spells/AEffet.h"
+#include "Spells/AForme.h"
+#include "Spells/AElement.h"
 
 // Sets default values
 ACraft::ACraft()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-    // Initialisation du mesh
     MachineMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MachineMesh"));
     RootComponent = MachineMesh;
 
-    // Initialisation de la zone de détection
     DetectionZone = CreateDefaultSubobject<UBoxComponent>(TEXT("DetectionZone"));
     DetectionZone->SetupAttachment(MachineMesh);
     DetectionZone->SetBoxExtent(FVector(100.0f, 100.0f, 100.0f));
@@ -22,19 +21,16 @@ ACraft::ACraft()
     StaffSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("StaffSpawnPoint"));
     StaffSpawnPoint->SetupAttachment(RootComponent);
 
-    // Initialisation des états
     bHasElement = false;
     bHasForme = false;
     bHasEffet = false;
 }
 
-// Called when the game starts or when spawned
 void ACraft::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-// Called every frame
 void ACraft::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -56,30 +52,54 @@ void ACraft::AddIngredient(AIngredient* Ingredient)
 {
     switch (Ingredient->Type)
     {
-    case EIngredientType::Element:
-        if (!bHasElement)
-        {
-            ResultElement = Ingredient->Element;
-            bHasElement = true;
-            Ingredient->Destroy(); // Supprime l'ingrédient
-        }
-        break;
-    case EIngredientType::Forme:
-        if (!bHasForme)
-        {
-            ResultForme = Ingredient->Forme;
-            bHasForme = true;
-            Ingredient->Destroy();
-        }
-        break;
-    case EIngredientType::Effet:
-        if (!bHasEffet)
-        {
-            ResultEffet = Ingredient->Effet;
-            bHasEffet = true;
-            Ingredient->Destroy();
-        }
-        break;
+        case EIngredientType::Element:
+            if (!bHasElement)
+            {
+                AAElement* ElementIngredient = Cast<AAElement>(Ingredient);
+                if (ElementIngredient)
+                {
+                    ResultElement = ElementIngredient;
+                    ResultElementName = Ingredient->Element;
+                    bHasElement = true;
+                    StoredIngredients.Add(Ingredient);
+                    Ingredient->SetActorHiddenInGame(true);
+                    Ingredient->SetActorEnableCollision(false);
+                    Ingredient->SetActorTickEnabled(false);
+                }
+            }
+            break;
+        case EIngredientType::Forme:
+            if (!bHasForme)
+            {
+                AAForme* FormeIngredient = Cast<AAForme>(Ingredient);
+                if (FormeIngredient)
+                {
+                    ResultForme = FormeIngredient;
+                    ResultFormeName = Ingredient->Forme;
+                    bHasForme = true;
+                    StoredIngredients.Add(Ingredient);
+                    Ingredient->SetActorHiddenInGame(true);
+                    Ingredient->SetActorEnableCollision(false);
+                    Ingredient->SetActorTickEnabled(false);
+                }
+            }
+            break;
+        case EIngredientType::Effet:
+            if (!bHasEffet)
+            {   
+                AAEffet* EffectIngredient = Cast<AAEffet>(Ingredient);
+                if (EffectIngredient)
+                {
+                    ResultEffet = EffectIngredient;
+                    ResultEffetName = Ingredient->Effet;
+                    bHasEffet = true;
+                    StoredIngredients.Add(Ingredient);
+                    Ingredient->SetActorHiddenInGame(true);
+                    Ingredient->SetActorEnableCollision(false);
+                    Ingredient->SetActorTickEnabled(false);
+                }
+            }
+            break;
     }
 
     if (bHasElement && bHasForme && bHasEffet)
@@ -89,16 +109,14 @@ void ACraft::AddIngredient(AIngredient* Ingredient)
             FActorSpawnParameters SpawnParams;
             SpawnParams.Owner = this;
 
-            // Utiliser la position du StaffSpawnPoint
             FVector SpawnLocation = StaffSpawnPoint->GetComponentLocation();
             FRotator SpawnRotation = StaffSpawnPoint->GetComponentRotation();
 
-            // Spawner le bâton
             CreatedStaff = GetWorld()->SpawnActor<AStaff>(StaffBlueprint, SpawnLocation, SpawnRotation, SpawnParams);
 
             if (CreatedStaff)
             {
-                CreatedStaff->SetResults(ResultElement, ResultForme, ResultEffet);
+                CreatedStaff->SetResults(ResultElementName, ResultFormeName, ResultEffetName, ResultElement, ResultForme, ResultEffet);
             }
         }
         else
@@ -116,7 +134,7 @@ void ACraft::ResetMachine()
     bHasForme = false;
     bHasEffet = false;
 
-    ResultElement = EElement::Feu;
-    ResultForme = EForme::Arbre;
-    ResultEffet = EEffet::Immobile;
+    ResultElementName = EElement::Feu;
+    ResultFormeName = EForme::Arbre;
+    ResultEffetName = EEffet::Immobile;
 }

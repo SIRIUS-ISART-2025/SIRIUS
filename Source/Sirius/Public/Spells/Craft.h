@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Ingredient.h"
 #include "../Staff.h"
+#include "Spells/Effects/DefaultEffect.h"
 #include "Components/BoxComponent.h"
 #include "Craft.generated.h"
 
@@ -29,6 +30,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+    UPROPERTY()
+    TArray<AIngredient*> StoredIngredients;
+
     // Zone de détection
     UPROPERTY(VisibleAnywhere)
     class UBoxComponent* DetectionZone;
@@ -37,15 +41,25 @@ public:
     UPROPERTY(VisibleAnywhere)
     class UStaticMeshComponent* MachineMesh;
 
-    // Enums pour le résultat final
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-    EElement ResultElement;
+    // Composant des sorts pour le résultat final
+    UPROPERTY(VisibleAnywhere)
+    AAElement* ResultElement;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-    EForme ResultForme;
+    UPROPERTY(VisibleAnywhere)
+    AAForme* ResultForme;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-    EEffet ResultEffet;
+    UPROPERTY(VisibleAnywhere)
+    AAEffet* ResultEffet;
+
+    // Les trois enums résultants
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    EElement ResultElementName;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    EForme ResultFormeName;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    EEffet ResultEffetName;
 
     // Booléens pour vérifier si un type a été ajouté
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
@@ -69,6 +83,6 @@ public:
     UPROPERTY()
     AStaff* CreatedStaff; 
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Craft|Spawn")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Craft")
     USceneComponent* StaffSpawnPoint;
 };

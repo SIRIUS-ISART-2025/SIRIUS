@@ -27,7 +27,9 @@ enum class EForme : uint8
 {
     Arbre UMETA(DisplayName = "Arbre"),
     Poule UMETA(DisplayName = "Poule"),
-    Sphere UMETA(DisplayName = "Sphere")
+    Sphere UMETA(DisplayName = "Sphere"),
+    Cone UMETA(DisplayName = "Cone"),
+    Cube UMETA(DisplayName = "Cube")
 };
 
 UENUM(BlueprintType)
@@ -35,6 +37,7 @@ enum class EEffet : uint8
 {
     Immobile UMETA(DisplayName = "Immobile"),
     Avance UMETA(DisplayName = "Avance"),
+    Chaotic UMETA(DisplayName = "Chaotic"),
     Tourne UMETA(DisplayName = "Tourne")
 };
 

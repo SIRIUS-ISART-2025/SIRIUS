@@ -28,7 +28,6 @@ void AIngredient::BeginPlay()
 void AIngredient::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AIngredient::EnablePhysics(bool bSimulate)

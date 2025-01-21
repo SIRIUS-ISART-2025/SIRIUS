@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Spells/Effects/DefaultEffect.h" 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
@@ -20,7 +21,7 @@ ASiriusCharacter::ASiriusCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
-		
+
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
@@ -48,6 +49,13 @@ void ASiriusCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (BlendMaterial)
+	{
+		/*
+		BlendMaterial->
+		*/
+	}
+
 	if (GrabbedObject)
 	{
 		// Calculer la position cible pour l'objet saisi
@@ -61,7 +69,7 @@ void ASiriusCharacter::Tick(float DeltaTime)
 //////////////////////////////////////////////////////////////////////////// Input
 
 void ASiriusCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{	
+{
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
@@ -161,12 +169,10 @@ void ASiriusCharacter::PickupStaff()
 {
 	if (EquippedStaff)
 	{
-		// Si un bâton est déjà équipé, le lâcher
 		DropStaff();
 		return;
 	}
 
-	// Définir les variables pour le raycast
 	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
 	FVector ForwardVector = FirstPersonCameraComponent->GetForwardVector();
 	FVector End = Start + (ForwardVector * 500.0f); // Rayon de 500 unités
@@ -175,7 +181,6 @@ void ASiriusCharacter::PickupStaff()
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this); // Ignore le joueur dans le raycast
 
-	// Effectuer le raycast
 	if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params))
 	{
 		// Vérifier si l'objet touché est un AStaff
@@ -214,7 +219,7 @@ void ASiriusCharacter::DropStaff()
 		FRotator ResetRotation = FRotator(0.0f, 0.0f, 0.0f);
 		EquippedStaff->SetActorRotation(ResetRotation);
 
-		EquippedStaff = nullptr; 
+		EquippedStaff = nullptr;
 	}
 }
 
@@ -222,6 +227,29 @@ void ASiriusCharacter::UseStaff()
 {
 	if (EquippedStaff)
 	{
-		EquippedStaff->LogResults(); // Afficher les valeurs
+		EquippedStaff->LogResults();
+
+		APlayerController* PlayerController = Cast<APlayerController>(GetController());
+		if (PlayerController)
+		{
+			FVector CameraLocation;
+			FRotator CameraRotation;
+
+			PlayerController->GetPlayerViewPoint(CameraLocation, CameraRotation);
+
+			FVector SpawnLocation = CameraLocation + CameraRotation.Vector() * 120.0f;
+			FRotator SpawnRotation = CameraRotation;
+
+			ASpell* SpawnedSpell = GetWorld()->SpawnActor<ASpell>(ASpell::StaticClass(), SpawnLocation, SpawnRotation);
+
+			if (SpawnedSpell)
+			{
+				SpawnedSpell->Forme = EquippedStaff->ResultForme;
+				SpawnedSpell->Element = EquippedStaff->ResultElement;
+				SpawnedSpell->Effet = EquippedStaff->ResultEffet;
+
+				SpawnedSpell->ApplySpell();
+			}
+		}
 	}
 }

@@ -30,6 +30,7 @@ ACraft::ACraft()
 void ACraft::BeginPlay()
 {
 	Super::BeginPlay();
+    GEngine->ForceGarbageCollection(false);
 }
 
 void ACraft::Tick(float DeltaTime)

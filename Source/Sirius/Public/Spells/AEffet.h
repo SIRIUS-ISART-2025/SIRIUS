@@ -12,7 +12,8 @@
 UENUM(BlueprintType)
 enum class EEndEffet : uint8
 {
-	DestroySelf UMETA(DisplayName = "DestroySelf")
+	DestroySelf UMETA(DisplayName = "DestroySelf"),
+	CraterDestroy UMETA(DisplayName = "CraterDestroy")
 };
 
 UCLASS()

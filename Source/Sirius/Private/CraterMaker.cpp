@@ -3,6 +3,8 @@
 
 #include "CraterMaker.h"
 
+ACraterMaker* ACraterMaker::SelfSelfCrater = nullptr;
+
 // Sets default values
 ACraterMaker::ACraterMaker()
 {
@@ -16,6 +18,7 @@ void ACraterMaker::BeginPlay()
 {
 	Super::BeginPlay();
 
+    SelfSelfCrater = this;
 	landscape = Cast<ALandscape>(UGameplayStatics::GetActorOfClass(GetWorld(), ALandscape::StaticClass()));
 	
 	// AdjustLandscapeAtWorldLocation({9280,0,-1768}, 3000, 1);
@@ -26,17 +29,21 @@ void ACraterMaker::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+    /*
     APlayerController* currentPlayerController = GetWorld()->GetFirstPlayerController();
+    
     if (currentPlayerController->WasInputKeyJustPressed(EKeys::P))
 	{
 		OnPKeyPressed();
 	}
+    */
 }
 
 
 
-void ACraterMaker::AdjustLandscapeAtWorldLocation(const FVector& WorldLocation, float AdjustRadius, float EdgeBlendFactor)
+void ACraterMaker::AdjustLandscapeAtWorldLocation(const FVector& WorldLocationBase, float AdjustRadius, float EdgeBlendFactor, float Depth)
 {
+    FVector WorldLocation = WorldLocationBase + FVector(0, 0, Depth);
 	if (!landscape) return;
     EdgeBlendFactor = FMath::Clamp(EdgeBlendFactor, 0.0f, 1.0f);
 
@@ -80,6 +87,7 @@ void ACraterMaker::AdjustLandscapeAtWorldLocation(const FVector& WorldLocation, 
     HeightmapAccessor.GetDataFast(MinX, MinY, MaxX, MaxY, HeightData.GetData());
 
     // Calculate the target height based on WorldLocation.Z
+    if (WorldLocation.Z > (LandscapeOrigin.Z + 4.f)) return;
     float BaseHeightInWorld = WorldLocation.Z - LandscapeOrigin.Z;
     const uint16 FlatHeightValue = 32768;
     uint16 TargetHeight = FMath::Clamp<uint16>(FlatHeightValue + BaseHeightInWorld * 128.0f / LandscapeScale.Z, 0, UINT16_MAX);
@@ -106,11 +114,15 @@ void ACraterMaker::AdjustLandscapeAtWorldLocation(const FVector& WorldLocation, 
 
     // Flush any changes to the heightmap
     HeightmapAccessor.Flush();
-// landscape->CreateLandscapeInfo();
+    // landscape->CreateLandscapeInfo();
+    landscape->RecreateCollisionComponents();
+    landscape->MarkComponentsRenderStateDirty();
+    landscape->MarkPackageDirty(); 
+    LandscapeInfo->UpdateAllAddCollisions(); 
 }
 
 void ACraterMaker::OnPKeyPressed()
 {
-worldLocation = GetWorld()->GetFirstPlayerController()->GetTargetLocation() - FVector(0,0,168);// + GetTransform().GetLocation();
-AdjustLandscapeAtWorldLocation(worldLocation, adjustRadius, edgeBlendFactor);
+    worldLocation = GetWorld()->GetFirstPlayerController()->GetTargetLocation() - FVector(0,0,168);// + GetTransform().GetLocation();
+    //AdjustLandscapeAtWorldLocation(worldLocation, adjustRadius, edgeBlendFactor);
 }

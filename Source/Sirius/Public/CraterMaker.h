@@ -22,6 +22,8 @@ private:
 public:	
 	// Sets default values for this actor's properties
 	ACraterMaker();
+
+	static ACraterMaker* SelfSelfCrater;
 	
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "CraterParameter")
 	FVector worldLocation = {0,0,-1768};
@@ -30,7 +32,7 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "CraterParameter")
 	float edgeBlendFactor = 1;
 
-	void AdjustLandscapeAtWorldLocation(const FVector& WorldLocation, float AdjustRadius, float EdgeBlendFactor);
+	void AdjustLandscapeAtWorldLocation(const FVector& WorldLocation, float AdjustRadius, float EdgeBlendFactor, float Depth);
 
 protected:
 	// Called when the game starts or when spawned

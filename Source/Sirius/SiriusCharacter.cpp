@@ -249,6 +249,13 @@ void ASiriusCharacter::UseStaff()
 				SpawnedSpell->Effet = EquippedStaff->ResultEffet;
 
 				SpawnedSpell->ApplySpell();
+
+				for (int32 i = 0; i < EquippedStaff->FormesListe.Num(); ++i)
+				{
+					SpawnedSpell->FormesListe.Add(EquippedStaff->FormesListe[i]);
+					SpawnedSpell->ElementsListe.Add(EquippedStaff->ElementsListe[i]);
+					SpawnedSpell->EffetsListe.Add(EquippedStaff->EffetsListe[i]);
+				}
 			}
 		}
 	}

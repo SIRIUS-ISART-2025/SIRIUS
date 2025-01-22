@@ -24,6 +24,7 @@ protected:
 	virtual void BeginPlay() override;
 
     void AddIngredient(AIngredient* Ingredient);
+    void AddStaff(AStaff* Staff);
     void ResetMachine();
 
 public:	
@@ -51,6 +52,9 @@ public:
     UPROPERTY(VisibleAnywhere)
     AAEffet* ResultEffet;
 
+    UPROPERTY(VisibleAnywhere)
+    AStaff* ResultStaff;
+
     // Les trois enums résultants
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     EElement ResultElementName;
@@ -70,6 +74,9 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
     bool bHasEffet;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+    bool bHasStaff;
 
     // Fonction appelée lorsque quelque chose entre dans la zone
     UFUNCTION()

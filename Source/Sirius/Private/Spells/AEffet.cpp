@@ -37,3 +37,17 @@ ADefaultEffect* AAEffet::GetEffect()
     }
     return nullptr;
 }
+
+ADefaultEffect* AAEffet::GetEndEffect()
+{
+    if (EndEffectDictionary.Contains(EndEffet))
+    {
+        TSubclassOf<ADefaultEffect> EffectClass = EndEffectDictionary[EndEffet];
+        if (EffectClass)
+        {
+            ADefaultEffect* EffectInstance = NewObject<ADefaultEffect>(this, EffectClass);
+            return EffectInstance;
+        }
+    }
+    return nullptr;
+}

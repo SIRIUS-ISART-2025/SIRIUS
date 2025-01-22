@@ -37,8 +37,10 @@ enum class EEffet : uint8
 {
     Immobile UMETA(DisplayName = "Immobile"),
     Avance UMETA(DisplayName = "Avance"),
+    AvanceLentement UMETA(DisplayName = "AvanceLentement"),
     Chaotic UMETA(DisplayName = "Chaotic"),
-    Tourne UMETA(DisplayName = "Tourne")
+    Grossi UMETA(DisplayName = "Grossi"),
+    Rapetissi UMETA(DisplayName = "Rapetissi")
 };
 
 UCLASS()

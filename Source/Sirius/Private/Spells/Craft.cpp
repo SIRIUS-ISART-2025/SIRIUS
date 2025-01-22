@@ -164,10 +164,13 @@ void ACraft::AddStaff(AStaff* Staff)
 
         if (Staff && Staff->GetMesh())
         {
-            FVector Impulse = FVector(0, 0, 1) * 300.0f;
-            FVector ImpulseLocation = GetActorLocation();
+            FVector SpawnLocation = StaffSpawnPoint->GetComponentLocation();
+            FRotator SpawnRotation = StaffSpawnPoint->GetComponentRotation();
+            Staff->SetActorLocationAndRotation(SpawnLocation, SpawnRotation);
 
-            Staff->GetMesh()->AddImpulseAtLocation(Impulse, ImpulseLocation);
+            //FVector Impulse = FVector(0, 0, 1) * 300.0f;
+            //FVector ImpulseLocation = GetActorLocation();
+            //Staff->GetMesh()->AddImpulseAtLocation(Impulse, ImpulseLocation);
         }
 
         bHasStaff = false;

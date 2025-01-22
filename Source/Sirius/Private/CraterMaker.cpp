@@ -29,14 +29,12 @@ void ACraterMaker::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-    /*
     APlayerController* currentPlayerController = GetWorld()->GetFirstPlayerController();
     
     if (currentPlayerController->WasInputKeyJustPressed(EKeys::P))
 	{
 		OnPKeyPressed();
 	}
-    */
 }
 
 
@@ -123,6 +121,5 @@ void ACraterMaker::AdjustLandscapeAtWorldLocation(const FVector& WorldLocationBa
 
 void ACraterMaker::OnPKeyPressed()
 {
-    worldLocation = GetWorld()->GetFirstPlayerController()->GetTargetLocation() - FVector(0,0,168);// + GetTransform().GetLocation();
-    //AdjustLandscapeAtWorldLocation(worldLocation, adjustRadius, edgeBlendFactor);
+    AdjustLandscapeAtWorldLocation(GetWorld()->GetFirstPlayerController()->GetTargetLocation(), adjustRadius, edgeBlendFactor, 100.f);
 }

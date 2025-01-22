@@ -18,8 +18,10 @@ UENUM(BlueprintType)
 enum class EElement : uint8
 {
     Feu UMETA(DisplayName = "Feu"),
-    Eau UMETA(DisplayName = "Eau"),
-    Terre UMETA(DisplayName = "Terre")
+    Soap UMETA(DisplayName = "Savon"),
+    Thunder UMETA(DisplayName = "Foudre"),
+    Cheese UMETA(DisplayName = "Fromage"),
+    Crystal UMETA(DisplayName = "Crystal")
 };
 
 UENUM(BlueprintType)
@@ -28,6 +30,9 @@ enum class EForme : uint8
     Arbre UMETA(DisplayName = "Arbre"),
     Poule UMETA(DisplayName = "Poule"),
     Sphere UMETA(DisplayName = "Sphere"),
+    Skull UMETA(DisplayName = "Crane"),
+    Cadre UMETA(DisplayName = "Cadre"),
+    Fountain UMETA(DisplayName = "Fontaine"),
     Cone UMETA(DisplayName = "Cone"),
     Cube UMETA(DisplayName = "Cube")
 };

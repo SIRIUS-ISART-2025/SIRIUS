@@ -31,6 +31,7 @@ void ACraft::BeginPlay()
 {
 	Super::BeginPlay();
     GEngine->ForceGarbageCollection(false);
+    GEngine->SetTimeUntilNextGarbageCollection(10000000);
 }
 
 void ACraft::Tick(float DeltaTime)

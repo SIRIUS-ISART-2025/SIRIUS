@@ -90,3 +90,5 @@ DerivedDataCache
 
 # Keep Plugins
 !Plugins
+Content/PN_GroundFoliage/Meshes/groundPlantMesh/ground_02_04.uasset
+Content/PN_GroundFoliage/Meshes/groundPlantMesh/ground_06_09.uasset

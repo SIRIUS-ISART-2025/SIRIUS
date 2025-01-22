@@ -21,12 +21,18 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, Category = "SpellDataElements")
-	TObjectPtr<UMaterialInstance> ElementMaterial;
+	TObjectPtr<UMaterial> ElementMaterial;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable, Category = "SpellDataElements")
-	UMaterialInstance* GetMaterial() const { return ElementMaterial; }
+	UMaterial* GetMaterial() const { return ElementMaterial; }
+
+	UPROPERTY(EditAnywhere, Category = "SpellDataElements")
+	TObjectPtr<UNiagaraSystem> Particles;
+
+	UFUNCTION(BlueprintCallable, Category = "SpellDataElements")
+	UNiagaraSystem* GetParticles() const { return Particles; }
 };

@@ -8,6 +8,8 @@
 #include "Spells/Effects/DefaultEffect.h"
 #include "AForme.h"
 #include "AEffet.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 #include "AElement.h"
 #include "Spell.generated.h"
 
@@ -34,11 +36,37 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
 	AAEffet* Effet;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
+	TArray<AAForme*> FormesListe;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
+	TArray<AAElement*> ElementsListe;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
+	TArray<AAEffet*> EffetsListe;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool bTrigerred;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spell")
-	UStaticMeshComponent* SpellMesh;
+	UStaticMeshComponent* SpellMeshBase;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spell")
+	UStaticMeshComponent* SpellMeshTrans;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spell")
 	ADefaultEffect* EffectInstance;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spell")
+	ADefaultEffect* EndEffectInstance;
+
+	UPROPERTY(EditAnywhere, Category = "Spell")
+	UNiagaraSystem* Particles;
+
+	UPROPERTY(VisibleAnywhere, Category = "Spell")
+	float EffectDuration;
+	UPROPERTY(VisibleAnywhere, Category = "Spell")
+	float TimeElapsed;
 
 	UFUNCTION(BlueprintCallable, Category = "Spell")
 	void ApplySpell();

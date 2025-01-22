@@ -21,7 +21,10 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, Category = "SpellDataShape")
-	UStaticMesh* ShapeMesh;
+	UStaticMesh* ShapeMeshBase;
+
+	UPROPERTY(EditAnywhere, Category = "SpellDataShape")
+	UStaticMesh* ShapeMeshTrans;
 
 	UPROPERTY(EditAnywhere, Category = "SpellDataShape")
 	TObjectPtr<UMaterialInstance> ShapeMaterial;
@@ -34,7 +37,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable, Category = "SpellDataShape")
-	UStaticMesh* GetMesh() const { return ShapeMesh; }
+	UStaticMesh* GetMeshBase() const { return ShapeMeshBase; }
+
+	UFUNCTION(BlueprintCallable, Category = "SpellDataShape")
+	UStaticMesh* GetMeshTrans() const { return ShapeMeshTrans; }
 
 	UFUNCTION(BlueprintCallable, Category = "SpellDataShape")
 	UMaterialInstance* GetMaterial() const { return ShapeMaterial; }

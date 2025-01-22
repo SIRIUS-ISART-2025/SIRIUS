@@ -24,6 +24,7 @@ ACraft::ACraft()
     bHasElement = false;
     bHasForme = false;
     bHasEffet = false;
+    bHasStaff = false;
 }
 
 void ACraft::BeginPlay()
@@ -41,10 +42,16 @@ void ACraft::OnIngredientDetected(UPrimitiveComponent* OverlappedComponent, AAct
     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
     const FHitResult& SweepResult)
 {
-    AIngredient* Ingredient = Cast<AIngredient>(OtherActor);
-    if (Ingredient)
+    AIngredient* Ingredient_ = Cast<AIngredient>(OtherActor);
+    if (Ingredient_)
     {
-        AddIngredient(Ingredient);
+        AddIngredient(Ingredient_);
+    }
+
+    AStaff* Staff_ = Cast<AStaff>(OtherActor);
+    if (Staff_)
+    {
+        AddStaff(Staff_);
     }
 }
 
@@ -125,6 +132,43 @@ void ACraft::AddIngredient(AIngredient* Ingredient)
         }
 
         ResetMachine();
+    }
+}
+
+void ACraft::AddStaff(AStaff* Staff)
+{
+    if (!bHasStaff) 
+    {
+        ResultStaff = Staff;
+        Staff->SetActorHiddenInGame(true);
+        Staff->SetActorEnableCollision(false);
+        Staff->SetActorTickEnabled(false);
+        bHasStaff = true;
+    } else 
+    {
+        Staff->FormesListe.Add(ResultStaff->ResultForme);
+        Staff->ElementsListe.Add(ResultStaff->ResultElement);
+        Staff->EffetsListe.Add(ResultStaff->ResultEffet);
+
+        if (ResultStaff->FormesListe.Num() > 0 && ResultStaff->ElementsListe.Num() > 0 && ResultStaff->EffetsListe.Num() > 0)
+        {
+            for (int32 i = 0; i < ResultStaff->FormesListe.Num(); ++i)
+            {
+                Staff->FormesListe.Add(ResultStaff->FormesListe[i]);
+                Staff->ElementsListe.Add(ResultStaff->ElementsListe[i]);
+                Staff->EffetsListe.Add(ResultStaff->EffetsListe[i]);
+            }
+        }
+
+        if (Staff && Staff->GetMesh())
+        {
+            FVector Impulse = FVector(0, 0, 1) * 300.0f;
+            FVector ImpulseLocation = GetActorLocation();
+
+            Staff->GetMesh()->AddImpulseAtLocation(Impulse, ImpulseLocation);
+        }
+
+        bHasStaff = false;
     }
 }
 

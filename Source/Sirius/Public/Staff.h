@@ -34,6 +34,15 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     AAEffet* ResultEffet;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
+    TArray<AAForme*> FormesListe;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
+    TArray<AAElement*> ElementsListe;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
+    TArray<AAEffet*> EffetsListe;
+
     // Les trois enums résultants
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     EElement ResultElementName;
@@ -43,6 +52,9 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     EEffet ResultEffetName;
+
+    UFUNCTION(BlueprintCallable)
+    UStaticMeshComponent* GetMesh() const { return StaffMesh; }
 
     // Les fonctions de creation de sort
     UFUNCTION()

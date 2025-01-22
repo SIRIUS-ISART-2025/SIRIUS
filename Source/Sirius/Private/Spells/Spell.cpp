@@ -12,18 +12,28 @@ ASpell::ASpell()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	SpellMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpellMesh"));
-	SpellMesh->SetSimulatePhysics(true);
-	SpellMesh->SetEnableGravity(true);
-	SpellMesh->SetCollisionProfileName(TEXT("PhysicsActor"));
+    SpellMeshBase = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpellMeshBase"));
+    SpellMeshBase->SetSimulatePhysics(true);
+    SpellMeshBase->SetEnableGravity(true);
+    SpellMeshBase->SetCollisionProfileName(TEXT("PhysicsActor"));
 
-	RootComponent = SpellMesh;
+    SpellMeshTrans = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpellMeshTrans"));
+
+	RootComponent = SpellMeshBase;
+    SpellMeshTrans->SetupAttachment(SpellMeshBase);
+
+    EffectDuration = 0.0f;
+    TimeElapsed = 0.0f;
+    bTrigerred = false;
 }
 
 
 void ASpell::BeginPlay()
 {
 	Super::BeginPlay();
+
+    EffectDuration = FMath::RandRange(5.0f, 15.0f);
+    TimeElapsed = 0.0f;
 
 	if (Forme && Effet && Element)
 	{
@@ -35,36 +45,99 @@ void ASpell::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (EffectInstance)
-	{
-		EffectInstance->ApplyEffect(this);
-	}
+    if (TimeElapsed < EffectDuration)
+    {
+        if (EffectInstance)
+        {
+            if ((EffectInstance->bShouldBeTriggeredOnceTimeOnly && !bTrigerred) || (!EffectInstance->bShouldBeTriggeredOnceTimeOnly))
+            {
+                EffectInstance->ApplyEffect(this);
+                bTrigerred = true;
+            }
+            TimeElapsed += DeltaTime;
+        }
+    }
+    else 
+    {
+        if (FormesListe.Num() > 0 && ElementsListe.Num() > 0 && EffetsListe.Num() > 0)
+        {
+            // Obtenez un nombre aléatoire entre 1 et 15
+            int32 NumSpellsToSpawn = FMath::RandRange(1, 15);
+
+            for (int32 j = 0; j < NumSpellsToSpawn; ++j)
+            {
+                FVector SpawnLocation = GetActorLocation();
+                FRotator SpawnRotation = GetActorRotation();
+
+                // Faites spawn un sort
+                ASpell* SpawnedSpell = GetWorld()->SpawnActor<ASpell>(ASpell::StaticClass(), SpawnLocation, SpawnRotation);
+
+                if (SpawnedSpell)
+                {
+                    // Assignez les valeurs des listes au premier sort
+                    SpawnedSpell->Forme = FormesListe[0];
+                    SpawnedSpell->Element = ElementsListe[0];
+                    SpawnedSpell->Effet = EffetsListe[0];
+
+                    // Appliquez le sort
+                    SpawnedSpell->ApplySpell();
+
+                    // Ajoutez les autres éléments des listes au sort
+                    for (int32 i = 1; i < FormesListe.Num(); ++i)
+                    {
+                        SpawnedSpell->FormesListe.Add(FormesListe[i]);
+                        SpawnedSpell->ElementsListe.Add(ElementsListe[i]);
+                        SpawnedSpell->EffetsListe.Add(EffetsListe[i]);
+                    }
+                }
+            }
+        }
+
+
+        EndEffectInstance->ApplyEffect(this);
+    }
 }
 
 void ASpell::ApplySpell()
 {
 	if (Forme)
 	{
-		SpellMesh->SetStaticMesh(Forme->GetMesh());
-	}
+        if (Forme->GetMeshBase())
+        {
+            SpellMeshBase->SetStaticMesh(Forme->GetMeshBase());
+        }
+        if (Forme->GetMeshTrans())
+        {
+            SpellMeshTrans->SetStaticMesh(Forme->GetMeshTrans());
 
-	if (Element && Forme)
-	{
-        UMaterialInstance* Material = Element->GetMaterial();
-		if (Material)
-		{
-			SpellMesh->SetMaterial(0, Material);
-            UE_LOG(LogTemp, Warning, TEXT("BlendMaterials"));
-			//BlendMaterials(SpellMesh, Forme->GetMaterial(), Material, Forme->GetBlendTexture());
-		}
-	} else 
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Element && Forme fail"));
-    }
+            if (Element && Element->GetMaterial())
+            {
+                SpellMeshBase->SetMaterial(0, Forme->GetMaterial());
+                SpellMeshTrans->SetMaterial(0, Element->GetMaterial());
+
+                if (Element->GetParticles())
+                {
+                    Particles = Element->GetParticles();
+                    UNiagaraComponent* NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAttached(Particles, SpellMeshTrans, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
+                }
+            }
+        }
+        else if (Forme->GetMeshBase()) {
+            SpellMeshBase->SetMaterial(0, Element->GetMaterial());
+
+            if (Element->GetParticles())
+            {
+                Particles = Element->GetParticles();
+                UNiagaraComponent* NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAttached(Particles, SpellMeshBase, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
+            }
+        }
+	}
 
 	if (Effet)
 	{
+        EffectDuration = Effet->GetEffectDuration();
 		EffectInstance = Effet->GetEffect();
+        EndEffectInstance = Effet->GetEndEffect();
 	}
 }
 

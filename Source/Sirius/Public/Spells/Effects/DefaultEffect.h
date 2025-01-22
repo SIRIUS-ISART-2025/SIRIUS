@@ -23,5 +23,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool bShouldBeTriggeredOnceTimeOnly;
+
 	virtual void ApplyEffect(AActor* Target);
 };

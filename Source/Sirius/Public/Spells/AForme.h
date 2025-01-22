@@ -27,7 +27,7 @@ protected:
 	UStaticMesh* ShapeMeshTrans;
 
 	UPROPERTY(EditAnywhere, Category = "SpellDataShape")
-	TObjectPtr<UMaterial> ShapeMaterial;
+	TObjectPtr<UMaterialInstance> ShapeMaterial;
 
 	UPROPERTY(EditAnywhere, Category = "SpellDataShape")
 	UTexture2D* BlendTexture;
@@ -43,7 +43,7 @@ public:
 	UStaticMesh* GetMeshTrans() const { return ShapeMeshTrans; }
 
 	UFUNCTION(BlueprintCallable, Category = "SpellDataShape")
-	UMaterial* GetMaterial() const { return ShapeMaterial; }
+	UMaterialInstance* GetMaterial() const { return ShapeMaterial; }
 
 	UFUNCTION(BlueprintCallable, Category = "SpellDataShape")
 	UTexture2D* GetBlendTexture() const { return BlendTexture; }

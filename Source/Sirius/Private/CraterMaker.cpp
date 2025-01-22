@@ -45,17 +45,18 @@ void ACraterMaker::AdjustLandscapeAtWorldLocation(const FVector& WorldLocationBa
 	if (!landscape) return;
     EdgeBlendFactor = FMath::Clamp(EdgeBlendFactor, 0.0f, 1.0f);
 
+    /*
     if (!landscape->bCanHaveLayersContent)
     {
     	landscape->ToggleCanHaveLayersContent();
 	}
 
     ULandscapeInfo* LandscapeInfo = landscape->GetLandscapeInfo();
-    
-    if (!LandscapeInfo) return;
+    */
+    //if (!LandscapeInfo) return;
 
     FIntRect LandscapeExtent;
-    if (!LandscapeInfo->GetLandscapeExtent(LandscapeExtent)) return;
+    //if (!LandscapeInfo->GetLandscapeExtent(LandscapeExtent)) return;
 
     const FVector LandscapeOrigin = landscape->GetActorLocation();
     const FVector LandscapeScale = landscape->GetActorScale3D();
@@ -76,13 +77,13 @@ void ACraterMaker::AdjustLandscapeAtWorldLocation(const FVector& WorldLocationBa
     int32 Height = MaxY - MinY + 1;
 
     //Create an instance of FLandscapeEditDataInterface
-    FHeightmapAccessor<false> HeightmapAccessor(LandscapeInfo);
+    //FHeightmapAccessor<false> HeightmapAccessor(LandscapeInfo);
 
     TArray<uint16> HeightData;
     HeightData.SetNum(Width * Height);
 
     // Get the current heightmap data
-    HeightmapAccessor.GetDataFast(MinX, MinY, MaxX, MaxY, HeightData.GetData());
+    //HeightmapAccessor.GetDataFast(MinX, MinY, MaxX, MaxY, HeightData.GetData());
 
     // Calculate the target height based on WorldLocation.Z
     if (WorldLocation.Z > (LandscapeOrigin.Z + 4.f)) return;
@@ -108,15 +109,15 @@ void ACraterMaker::AdjustLandscapeAtWorldLocation(const FVector& WorldLocationBa
     }
 
     // Set the new heightmap data
-    HeightmapAccessor.SetData(MinX, MinY, MaxX, MaxY, HeightData.GetData());
+    //HeightmapAccessor.SetData(MinX, MinY, MaxX, MaxY, HeightData.GetData());
 
     // Flush any changes to the heightmap
-    HeightmapAccessor.Flush();
+    //HeightmapAccessor.Flush();
     // landscape->CreateLandscapeInfo();
-    landscape->RecreateCollisionComponents();
+    //landscape->RecreateCollisionComponents();
     landscape->MarkComponentsRenderStateDirty();
     landscape->MarkPackageDirty(); 
-    LandscapeInfo->UpdateAllAddCollisions(); 
+    //LandscapeInfo->UpdateAllAddCollisions(); 
 }
 
 void ACraterMaker::OnPKeyPressed()
